@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 本地数据（不要提交自己的记忆）
+data/
+memory/
+*.log
+
+# 编辑器
+.vscode/
+.idea/
+.DS_Store
+
+# 临时
+.tmp*
+*.bak

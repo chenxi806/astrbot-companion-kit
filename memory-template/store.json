@@ -1,0 +1,39 @@
+{
+  "version": 1,
+  "updated": "2026-01-01",
+  "facts": [
+    {
+      "id": "example-fact",
+      "text": "示例：生日 1 月 1 日（删掉这行，换成真实信息）",
+      "scope": ["companion"],
+      "confidence": 1.0,
+      "source": "manual",
+      "updated": "2026-01-01"
+    }
+  ],
+  "judgments": [
+    {
+      "id": "example-judgment",
+      "text": "示例：累的时候先接住情绪，别讲道理，也别追问第二遍",
+      "scope": ["companion"],
+      "confidence": 0.7,
+      "status": "active",
+      "created": "2026-01-01",
+      "updated": "2026-01-01",
+      "supersedes": null,
+      "insights": [],
+      "evidence": ["2026-01-01 示例证据，换成真实对话"]
+    }
+  ],
+  "taboos": [
+    {
+      "id": "example-taboo",
+      "text": "示例：不拿「刚说过」「又问一遍」搪塞",
+      "scope": ["companion"],
+      "confidence": 0.9,
+      "source": "manual",
+      "updated": "2026-01-01"
+    }
+  ],
+  "insights": []
+}

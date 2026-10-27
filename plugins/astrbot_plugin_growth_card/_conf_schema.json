@@ -1,0 +1,56 @@
+{
+    "enabled": {
+        "description": "启用判断卡注入",
+        "type": "bool",
+        "default": true,
+        "hint": "每轮对话把 card.companion.txt 附加到用户消息末尾；关掉后角色就看不到这张卡。"
+    },
+    "card_path": {
+        "description": "判断卡文件路径",
+        "type": "string",
+        "default": "",
+        "hint": "改完 store.json 后运行 python memory/render.py 重新生成；插件按文件修改时间自动重读。"
+    },
+    "memory_dir": {
+        "description": "记忆根目录",
+        "type": "string",
+        "default": "",
+        "hint": "/card log 把事件写到这里的 events/YYYY-MM.md；/card review 读 proposals/。"
+    },
+    "admin_only": {
+        "description": "写操作仅限管理员",
+        "type": "bool",
+        "default": true,
+        "hint": "打开后，/card reload、/card log、/card review 只有 AstrBot 管理员能用；/card 查看不受限。"
+    },
+    "record_raw": {
+        "description": "记录原始问答",
+        "type": "bool",
+        "default": true,
+        "hint": "每轮把 user/assistant 原文追加到 raw/YYYY-MM-DD.jsonl，供每周复盘；不要的话可以关掉。"
+    },
+    "raw_dir": {
+        "description": "原始记录目录",
+        "type": "string",
+        "default": "",
+        "hint": "留空则用 memory_dir/raw。"
+    },
+    "scope": {
+        "description": "生效范围",
+        "type": "string",
+        "default": "private",
+        "hint": "private = 只对私聊注入和记录；all = 所有会话（不建议，群里会看到个人信息）。"
+    },
+    "allowed_umos": {
+        "description": "只对这些会话生效（可留空）",
+        "type": "list",
+        "default": [],
+        "hint": "留空表示所有私聊。填了就只对列表里的 unified_msg_origin 生效，比如 default:<bot_id>:FriendMessage:<user_id>"
+    },
+    "owner_id": {
+        "description": "主人 QQ 号（可选）",
+        "type": "string",
+        "default": "",
+        "hint": "填了就只认这个号用 /card 的写操作；留空则私聊里都认。"
+    }
+}

@@ -1,0 +1,10 @@
+name: "astrbot_plugin_growth_card"
+display_name: "判断卡 (Growth Card)"
+author: "local"
+version: "v1.0.0"
+desc: "把外置记忆卡（事实/判断/雷区）注入每轮对话，并提供 /card 查看与维护命令"
+repo: ""
+astrbot_version: ">=4.0.0"
+tags:
+  - 记忆
+  - 人格

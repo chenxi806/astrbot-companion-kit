@@ -1,0 +1,11 @@
+name: "astrbot_plugin_weekly_review"
+display_name: "每周复盘 (Weekly Review)"
+author: "local"
+version: "v1.0.0"
+desc: "每周自动整理记忆和聊天，产出判断变更提案，你回「同意」才写入；回「驳回」就丢弃"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 记忆
+  - 复盘
+  - 自动化

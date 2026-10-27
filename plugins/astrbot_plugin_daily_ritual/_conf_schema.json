@@ -1,0 +1,56 @@
+{
+    "enabled": {
+        "description": "启用早晚安消息",
+        "type": "bool",
+        "default": true,
+        "hint": "关掉后不再定时发送，/ritual test 仍然可用。"
+    },
+    "morning_time": {
+        "description": "早上提醒时间",
+        "type": "string",
+        "default": "08:00",
+        "hint": "24 小时制 HH:MM，按下面的时区算。"
+    },
+    "night_time": {
+        "description": "晚上提醒时间",
+        "type": "string",
+        "default": "00:00",
+        "hint": "0:00 就是午夜十二点；想改成 23:30 就填 23:30。"
+    },
+    "timezone": {
+        "description": "时区",
+        "type": "string",
+        "default": "Asia/Shanghai",
+        "hint": "不填默认 Asia/Shanghai。"
+    },
+    "umo": {
+        "description": "发送目标会话",
+        "type": "string",
+        "default": "",
+        "hint": "留空则自动取最近一次私聊的会话来发；填了只发这个会话。"
+    },
+    "memory_dir": {
+        "description": "记忆目录",
+        "type": "string",
+        "default": "",
+        "hint": "用来读 card.companion.txt 和最近的 raw 聊天记录。"
+    },
+    "context_messages": {
+        "description": "参考多少条最近对话",
+        "type": "int",
+        "default": 30,
+        "hint": "太多会稀释重点，20~40 比较合适。"
+    },
+    "extra_prompt": {
+        "description": "额外要求",
+        "type": "string",
+        "default": "",
+        "hint": "会追加到生成提示词末尾，比如「多用语气词」。"
+    },
+    "catchup_minutes": {
+        "description": "补发窗口（分钟）",
+        "type": "int",
+        "default": 90,
+        "hint": "重启或休眠错过时间后，在这个窗口内补发；填 0 关闭。"
+    }
+}

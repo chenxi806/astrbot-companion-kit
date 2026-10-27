@@ -1,0 +1,11 @@
+name: "astrbot_plugin_galgame"
+display_name: "关系阶段 (Galgame)"
+author: "local"
+version: "v1.0.0"
+desc: "认识→熟悉→亲近→亲密（恋人未满）：自然推进、共同事件、选项互动、告白锁"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 好感度
+  - 关系
+  - galgame

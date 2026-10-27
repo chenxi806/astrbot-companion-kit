@@ -1,0 +1,50 @@
+{
+    "weekday": {
+        "description": "每周几跑",
+        "type": "int",
+        "default": 6,
+        "hint": "0=周一 … 6=周日。默认周日。"
+    },
+    "time": {
+        "description": "几点跑",
+        "type": "string",
+        "default": "21:00",
+        "hint": "24 小时制 HH:MM。"
+    },
+    "timezone": {
+        "description": "时区",
+        "type": "string",
+        "default": "Asia/Shanghai",
+        "hint": ""
+    },
+    "umo": {
+        "description": "发送目标会话",
+        "type": "string",
+        "default": "",
+        "hint": "留空自动取最近私聊。"
+    },
+    "owner_id": {
+        "description": "主人 QQ 号（可选）",
+        "type": "string",
+        "default": "",
+        "hint": "填了就只认这个号发的「同意」「驳回」；留空则私聊里都认。"
+    },
+    "memory_dir": {
+        "description": "记忆目录",
+        "type": "string",
+        "default": "",
+        "hint": ""
+    },
+    "volume_trigger": {
+        "description": "攒够多少条新对话就先跑一次",
+        "type": "int",
+        "default": 50,
+        "hint": "不用等到周日；填 0 表示只看日期。"
+    },
+    "decay_enabled": {
+        "description": "启用置信度周衰减",
+        "type": "bool",
+        "default": true,
+        "hint": "没被强化的判断每周 -0.01，最低 0.3；低于 0.45 标 stale。"
+    }
+}

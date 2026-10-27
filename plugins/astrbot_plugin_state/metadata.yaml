@@ -1,0 +1,11 @@
+name: "astrbot_plugin_state"
+display_name: "状态机 (Mood/Energy)"
+author: "local"
+version: "v1.0.0"
+desc: "心情和精力两个慢变量，影响语气与主动程度；whim 池提供随机由头"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 状态
+  - 随机性
+  - 拟人

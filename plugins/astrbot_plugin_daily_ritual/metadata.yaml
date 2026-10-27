@@ -1,0 +1,11 @@
+name: "astrbot_plugin_daily_ritual"
+display_name: "早晚安 (Daily Ritual)"
+author: "local"
+version: "v1.0.0"
+desc: "每天 8:00 叫起床、0:00 催睡觉，用当前人格 + 判断卡 + 最近上下文生成，不公式化"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 主动消息
+  - 提醒
+  - 作息

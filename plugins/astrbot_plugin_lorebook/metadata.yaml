@@ -1,0 +1,11 @@
+name: "astrbot_plugin_lorebook"
+display_name: "世界书 (Lorebook)"
+author: "local"
+version: "v1.0.0"
+desc: "把人格拆成带关键词和概率的条目，命中才注入；让设定更厚、行为更随机"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 人格
+  - 提示词
+  - 随机性
