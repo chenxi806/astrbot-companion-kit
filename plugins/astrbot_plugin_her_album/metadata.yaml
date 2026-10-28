@@ -1,0 +1,14 @@
+name: astrbot_plugin_her_album
+display_name: "她的相册"
+short_desc: 按场景或随机发送大肥鱼的插画照片
+desc: >-
+  本地相册插件：把大肥鱼的插画照片按场景标签或随机发给用户。
+  提供 send_her_photo LLM 工具与 /看照片 命令，图片与 meta.json 放在
+  D:\deepseek图标\her_album。
+version: 1.0.0
+author: local
+astrbot_version: ">=4.0.0"
+tags:
+  - 图片
+  - 相册
+  - 人格

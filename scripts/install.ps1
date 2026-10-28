@@ -1,34 +1,61 @@
+<#
+.SYNOPSIS
+    安装 Companion Memory Kit 到 AstrBot。
+
+.EXAMPLE
+    .\install.ps1 -AstrBotData "C:\AstrBot\data" -MemoryDir "C:\companion-memory"
+#>
 param(
     [Parameter(Mandatory = $true)]
     [string]$AstrBotData,
 
-    [string]$RepoRoot = (Resolve-Path "$PSScriptRoot\..").Path
+    [Parameter(Mandatory = $true)]
+    [string]$MemoryDir
 )
 
 $ErrorActionPreference = "Stop"
+$Repo = Split-Path -Parent $PSScriptRoot
 
-$pluginsSrc = Join-Path $RepoRoot "plugins"
-$pluginsDst = Join-Path $AstrBotData "plugins"
-$configDst = Join-Path $AstrBotData "config"
+$plugins = @(
+    "memory_card",
+    "card_review",
+    "voice_pool",
+    "pool_review",
+    "mode_switch"
+)
 
-if (-not (Test-Path $pluginsDst)) {
-    throw "找不到插件目录：$pluginsDst（确认 -AstrBotData 指向 AstrBot 的 data 目录）"
+New-Item -ItemType Directory -Force -Path "$AstrBotData\plugins", "$AstrBotData\config" | Out-Null
+
+foreach ($name in $plugins) {
+    $src = Join-Path $Repo "plugins\astrbot_plugin_$name"
+    $dst = Join-Path $AstrBotData "plugins\astrbot_plugin_$name"
+    if (Test-Path $dst) {
+        Write-Host "跳过已存在：$name"
+        continue
+    }
+    Copy-Item $src $dst -Recurse
+    Write-Host "安装插件：$name"
 }
 
-Get-ChildItem $pluginsSrc -Directory | ForEach-Object {
-    $target = Join-Path $pluginsDst $_.Name
-    if (Test-Path $target) {
-        Write-Host "已存在，跳过：$($_.Name)（要覆盖请先手动删除）" -ForegroundColor Yellow
+foreach ($name in $plugins) {
+    $src = Join-Path $Repo "config\astrbot_plugin_${name}_config.json"
+    $dst = Join-Path $AstrBotData "config\astrbot_plugin_${name}_config.json"
+    if (Test-Path $dst) {
+        Write-Host "跳过已存在配置：$name"
+        continue
     }
-    else {
-        Copy-Item $_.FullName $target -Recurse
-        Write-Host "已安装：$($_.Name)" -ForegroundColor Green
-    }
+    $cfg = Get-Content $src -Raw -Encoding UTF8 | ConvertFrom-Json
+    $cfg | Add-Member -NotePropertyName memory_dir -NotePropertyValue $MemoryDir -Force
+    $cfg | ConvertTo-Json -Depth 10 | Set-Content $dst -Encoding UTF8
+    Write-Host "写入配置：$name"
 }
+
+$memSrc = Join-Path $Repo "memory-template"
+if (-not (Test-Path $MemoryDir)) {
+    New-Item -ItemType Directory -Force -Path $MemoryDir | Out-Null
+}
+Copy-Item "$memSrc\*" $MemoryDir -Recurse -Force
+Write-Host "记忆模板已复制到：$MemoryDir"
 
 Write-Host ""
-Write-Host "下一步：" -ForegroundColor Cyan
-Write-Host "1. 初始化记忆目录：.\scripts\init-memory.ps1 -Target `"$AstrBotData\companion_memory`""
-Write-Host "2. 重启 AstrBot，让它生成默认配置"
-Write-Host "3. 改 data/config/astrbot_plugin_*_config.json 里的 memory_dir"
-Write-Host "4. 再重启一次"
+Write-Host "完成。重启 AstrBot 后发送 /card 验证。"

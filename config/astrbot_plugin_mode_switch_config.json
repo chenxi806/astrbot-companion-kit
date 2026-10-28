@@ -1,0 +1,5 @@
+{
+  "enabled": true,
+  "memory_dir": "__MEMORY_DIR__",
+  "timeout_minutes": 10
+}

@@ -1,26 +1,38 @@
 {
-    "enabled": {
-        "description": "启用关系阶段注入",
-        "type": "bool",
-        "default": true,
-        "hint": "关掉后她不再收到阶段提示。"
-    },
-    "memory_dir": {
-        "description": "记忆目录",
-        "type": "string",
-        "default": "",
-        "hint": "用 raw/ 里的聊天记录算天数和互动条数。"
-    },
-    "scope": {
-        "description": "生效范围",
-        "type": "string",
-        "default": "private",
-        "hint": "private = 只私聊。"
-    },
-    "allow_confession": {
-        "description": "开放告白（进入深度羁绊）",
-        "type": "bool",
-        "default": false,
-        "hint": "关着时关系锁在「亲密（恋人未满）」。想推进时再打开，并自己触发一次告白。"
-    }
+  "enabled": {
+    "description": "启用关系阶段注入",
+    "type": "bool",
+    "default": true,
+    "hint": "关掉后她不再收到阶段提示。"
+  },
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": "D:\\deepseek图标\\memory",
+    "hint": "用 raw/ 里的聊天记录算天数和互动条数。"
+  },
+  "scope": {
+    "description": "生效范围",
+    "type": "string",
+    "default": "private",
+    "hint": "private = 只私聊。"
+  },
+  "allow_confession": {
+    "description": "开放告白（进入深度羁绊）",
+    "type": "bool",
+    "default": false,
+    "hint": "关着时关系锁在「亲密（恋人未满）」。想推进时再打开，并自己触发一次告白。"
+  },
+  "start_stage": {
+    "description": "起始阶段（不想从「认识」重来就填）",
+    "type": "string",
+    "default": "",
+    "hint": "可选：acquaintance / familiar / close / intimate。填 close 表示已经亲近，只差共同事件。"
+  },
+  "start_date": {
+    "description": "认识日期（可选）",
+    "type": "string",
+    "default": "",
+    "hint": "YYYY-MM-DD。填了就用它算天数，而不是 raw 里最早的消息。"
+  }
 }

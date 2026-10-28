@@ -1,0 +1,11 @@
+name: "astrbot_plugin_card_review"
+display_name: "判断卡审查"
+author: "local"
+version: "v1.0.0"
+desc: "自动从聊天提取四类信息，攒成待审清单；用户回「通过 1,3」才写入判断卡"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 记忆
+  - 复盘
+  - 审批

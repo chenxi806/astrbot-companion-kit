@@ -1,0 +1,6 @@
+{
+  "enabled": true,
+  "memory_dir": "__MEMORY_DIR__",
+  "memes_path": "__MEMORY_DIR__\\memes.json",
+  "max_entries": 2
+}

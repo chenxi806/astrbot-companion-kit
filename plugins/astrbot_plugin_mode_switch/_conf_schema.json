@@ -1,0 +1,27 @@
+{
+  "enabled": {
+    "description": "启用模式系统",
+    "type": "bool",
+    "default": true
+  },
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": ""
+  },
+  "alice_minutes": {
+    "description": "艾莉丝模式持续分钟",
+    "type": "int",
+    "default": 45
+  },
+  "maid_minutes": {
+    "description": "女仆模式持续分钟",
+    "type": "int",
+    "default": 60
+  },
+  "scope": {
+    "description": "只对私聊生效",
+    "type": "string",
+    "default": "private"
+  }
+}

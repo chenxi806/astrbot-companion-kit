@@ -1,0 +1,10 @@
+name: "astrbot_plugin_mode_switch"
+display_name: "模式系统"
+author: "local"
+version: "v1.0.0"
+desc: "艾莉丝 / 女仆模式：进入、退出、超时，模式中注入角色卡"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 角色扮演
+  - 模式

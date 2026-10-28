@@ -1,0 +1,10 @@
+name: "astrbot_plugin_reply_splitter"
+display_name: "分段发送"
+author: "local"
+version: "v1.0.0"
+desc: "长回复拆成几条，动作和台词分开，隔一会儿发一条"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 分段
+  - 聊天节奏

@@ -1,0 +1,11 @@
+name: "astrbot_plugin_meme_glossary"
+display_name: "梗库"
+author: "local"
+version: "v1.0.0"
+desc: "按消息里出现的梗注入短释义，让她听得懂也接得住；不占世界书名额"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 梗
+  - 语料
+  - 理解

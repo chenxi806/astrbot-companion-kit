@@ -1,0 +1,22 @@
+{
+  "enabled": {
+    "description": "启用示例池",
+    "type": "bool",
+    "default": true
+  },
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": ""
+  },
+  "examples_per_turn": {
+    "description": "每轮注入几条",
+    "type": "int",
+    "default": 4
+  },
+  "scope": {
+    "description": "只对私聊生效",
+    "type": "string",
+    "default": "private"
+  }
+}

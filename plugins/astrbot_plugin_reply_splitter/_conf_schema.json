@@ -1,0 +1,22 @@
+{
+  "enabled": {
+    "description": "启用分段发送",
+    "type": "bool",
+    "default": true
+  },
+  "scope": {
+    "description": "只对私聊生效",
+    "type": "string",
+    "default": "private"
+  },
+  "min_chars": {
+    "description": "超过多少字才拆",
+    "type": "int",
+    "default": 80
+  },
+  "delay_seconds": {
+    "description": "每条之间停几秒",
+    "type": "float",
+    "default": 1.0
+  }
+}

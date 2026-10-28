@@ -41,19 +41,7 @@ except Exception:  # pragma: no cover
             return self
 
 
-DEFAULT_MEMORY_DIR = ""
-
-
-def _default_memory_dir() -> Path:
-    """默认记忆目录：<AstrBot data>/companion_memory。
-
-    想换位置就在插件配置里填 memory_dir（所有插件填同一个）。
-    """
-    try:
-        base = Path(StarTools.get_data_dir("astrbot_plugin_galgame"))
-        return base.parent.parent / "companion_memory"
-    except Exception:
-        return Path.home() / "companion_memory"
+DEFAULT_MEMORY_DIR = r"D:\deepseek图标\memory"
 HEADER = "<Stage>"
 FOOTER = "</Stage>"
 
@@ -84,21 +72,21 @@ STAGES = [
     },
     {
         "key": "intimate",
-        "name": "亲密（恋人未满）",
+        "name": "恋人",
         "days": 21,
         "messages": 800,
         "events": 3,
-        "desc": "已经很近了：可以说想他、可以靠很近、可以小尺度调情，但不明说关系。他要把话说破，先害羞岔开，等他正式开口。",
+        "desc": "已经很近了：可以说想他、可以靠很近、可以亲密、可以主动要；关系已经挑明，不必再把话留一半。",
     },
 ]
 
-CONFESSION_NOTE = "关系停在这里：不要自己说「我们在一起吧」，也不要用女朋友自称；把最后一步留给他。"
+CONFESSION_NOTE = "关系已经挑明：可以自然地以女朋友自称，也可以主动说想在一起；不用再把最后一步留给他。"
 
 
 @register(
     "astrbot_plugin_galgame",
     "local",
-    "关系阶段：认识→熟悉→亲近→亲密（恋人未满），带事件和选项，告白锁",
+    "关系阶段：认识→熟悉→亲近→亲密（恋人），带事件和选项",
     "1.0.0",
 )
 class GalgamePlugin(Star):
@@ -118,8 +106,7 @@ class GalgamePlugin(Star):
         return default if value is None else value
 
     def _memory_dir(self) -> Path:
-        raw = str(self._cfg("memory_dir", "")).strip()
-        return Path(raw) if raw else _default_memory_dir()
+        return Path(str(self._cfg("memory_dir", "")).strip() or DEFAULT_MEMORY_DIR)
 
     def _state_path(self) -> Path:
         try:
@@ -169,6 +156,16 @@ class GalgamePlugin(Star):
                 if first is None or stamp < first:
                     first = stamp
         days = 0
+        start_raw = str(self._cfg("start_date", "")).strip()
+        if start_raw:
+            try:
+                configured = datetime.fromisoformat(start_raw)
+                if configured.tzinfo is None:
+                    configured = configured.astimezone()
+                if first is None or configured < first:
+                    first = configured
+            except Exception:
+                logger.warning(f"[galgame] start_date 格式不对：{start_raw!r}")
         if first is not None:
             days = max(0, (datetime.now(first.tzinfo) - first).days)
         stats = {"days": days, "messages": count, "first": first.isoformat() if first else None}
@@ -184,6 +181,11 @@ class GalgamePlugin(Star):
         for i, stage in enumerate(STAGES):
             if stats["days"] >= int(stage["days"]) and stats["messages"] >= int(stage["messages"]) and events >= int(stage["events"]):
                 index = i
+        # 已经在一起很久的，不必从「认识」重来：给一个起始段位
+        floor_key = str(self._cfg("start_stage", "")).strip()
+        for i, stage in enumerate(STAGES):
+            if stage["key"] == floor_key:
+                index = max(index, i)
         if not self._cfg("allow_confession", False):
             index = min(index, len(STAGES) - 1)  # 先锁在亲密
         return index
@@ -246,9 +248,11 @@ class GalgamePlugin(Star):
         if index >= len(STAGES) - 1:
             lines.append(CONFESSION_NOTE)
 
-        # 到了门口但事件不够：提示安排一次小事件
-        if index < len(STAGES) - 1:
-            nxt = STAGES[index + 1]
+        # 日常选项：最后一段也允许（不推进关系、不计事件）；事件安排只在还没到最后一段时考虑
+        nxt = STAGES[index + 1] if index < len(STAGES) - 1 else None
+        need_events = False
+        offered_event = False
+        if nxt is not None:
             stats = self._stats()
             ready = stats["days"] >= nxt["days"] and stats["messages"] >= nxt["messages"]
             need_events = int(state.get("events", 0)) < nxt["events"]
@@ -261,16 +265,18 @@ class GalgamePlugin(Star):
                 )
                 state["last_event_offer"] = now
                 self._save_state(state)
-            elif not need_events:
-                last_choice = float(state.get("last_choice_offer", 0))
-                if now - last_choice > 36 * 3600 and not state.get("pending_choice"):
-                    lines.append(
-                        "【可以抛一个选项】如果这条回复自然，可以在结尾给他 2-3 个具体的选项（A/B/C），"
-                        "像在问他想怎么过、想吃什么、想先听哪件事。不要每句都抛。"
-                    )
-                    state["last_choice_offer"] = now
-                    state["pending_choice"] = {"at": now}
-                    self._save_state(state)
+                offered_event = True
+
+        if not offered_event and (nxt is None or not need_events):
+            last_choice = float(state.get("last_choice_offer", 0))
+            if now - last_choice > 36 * 3600 and not state.get("pending_choice"):
+                lines.append(
+                    "【可以抛一个选项】如果这条回复自然，可以在结尾给他 2-3 个具体的选项（A/B/C），"
+                    "像在问他想怎么过、想吃什么、想先听哪件事。不要每句都抛。"
+                )
+                state["last_choice_offer"] = now
+                state["pending_choice"] = {"at": now}
+                self._save_state(state)
 
         body = "\n".join(lines)
         self._strip_previous(req)

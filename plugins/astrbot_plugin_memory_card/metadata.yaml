@@ -1,0 +1,10 @@
+name: "astrbot_plugin_memory_card"
+display_name: "判断卡（记忆）"
+author: "local"
+version: "v1.0.0"
+desc: "事实/判断/雷区/洞察：/记 加判断，每轮注入；卡是外置文本，可读可改"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 记忆
+  - 判断卡

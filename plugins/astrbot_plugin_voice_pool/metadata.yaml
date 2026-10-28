@@ -1,0 +1,11 @@
+name: "astrbot_plugin_voice_pool"
+display_name: "示例池"
+author: "local"
+version: "v1.0.0"
+desc: "/good 收藏她上一句，/bad 标记不喜欢的；按权重抽 4 条注入，只管语感"
+repo: ""
+astrbot_version: ">=4.24.0"
+tags:
+  - 示例池
+  - 语感
+  - 少样本

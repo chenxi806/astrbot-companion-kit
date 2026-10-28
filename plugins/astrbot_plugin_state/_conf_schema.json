@@ -1,44 +1,44 @@
 {
-    "enabled": {
-        "description": "启用状态注入",
-        "type": "bool",
-        "default": true,
-        "hint": "关掉后她不再受心情/精力影响。"
-    },
-    "memory_dir": {
-        "description": "记忆目录",
-        "type": "string",
-        "default": "",
-        "hint": "whims.json 默认也在这里。"
-    },
-    "whims_path": {
-        "description": "whim 池文件",
-        "type": "string",
-        "default": "",
-        "hint": "留空则用 memory_dir/whims.json。"
-    },
-    "scope": {
-        "description": "生效范围",
-        "type": "string",
-        "default": "private",
-        "hint": "private = 只私聊。"
-    },
-    "whim_enabled": {
-        "description": "启用 whim 由头",
-        "type": "bool",
-        "default": true,
-        "hint": "关掉后只注入心情/精力，不抛小事。"
-    },
-    "max_per_day": {
-        "description": "每天最多几次 whim",
-        "type": "int",
-        "default": 2,
-        "hint": "默认 2。"
-    },
-    "min_gap_hours": {
-        "description": "两次 whim 至少隔几小时",
-        "type": "int",
-        "default": 5,
-        "hint": "默认 5 小时。"
-    }
+  "enabled": {
+    "description": "启用状态注入",
+    "type": "bool",
+    "default": true,
+    "hint": "关掉后她不再受心情/精力影响。"
+  },
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": "D:\\deepseek图标\\memory",
+    "hint": "whims.json 默认也在这里。"
+  },
+  "whims_path": {
+    "description": "whim 池文件",
+    "type": "string",
+    "default": "",
+    "hint": "留空则用 memory_dir/whims.json。"
+  },
+  "scope": {
+    "description": "生效范围",
+    "type": "string",
+    "default": "private",
+    "hint": "private = 只私聊。"
+  },
+  "whim_enabled": {
+    "description": "启用 whim 由头",
+    "type": "bool",
+    "default": true,
+    "hint": "关掉后只注入心情/精力，不抛小事。"
+  },
+  "max_per_day": {
+    "description": "每天最多几次 whim",
+    "type": "int",
+    "default": 2,
+    "hint": "默认 2。"
+  },
+  "min_gap_hours": {
+    "description": "两次 whim 至少隔几小时",
+    "type": "int",
+    "default": 5,
+    "hint": "默认 5 小时。"
+  }
 }

@@ -1,32 +1,51 @@
-# 贡献指南
+# Contributing
 
-## 提 Issue
+感谢你愿意一起完善这个项目。
 
-- 先说清楚：AstrBot 版本、平台、插件版本
-- 贴日志（`data/logs/astrbot.log` 里相关的那几行），**去掉 API key、QQ 号、openid**
-- 如果是行为不符合预期，写下你期望的行为
+## 可以贡献什么
 
-## 提 PR
+- 新的记忆系统（比如“关系事件”“承诺清单”）
+- 更好的审查策略（去重、聚类、权重）
+- 文档、示例、翻译
+- Bug 修复
 
-1. 一个插件一个 PR，别混在一起
-2. 不引入第三方依赖（只用标准库 + AstrBot API），除非有充分理由
-3. 配置项必须有 `_conf_schema.json` 里的 `description` 和 `hint`
-4. 涉及数据文件的改动，要兼容旧格式（读的时候容忍缺字段）
-5. 不提交任何个人数据：`store.json`、`raw/`、`card.companion.txt`、真实 QQ 号
+## 开发流程
 
-## 代码风格
+1. Fork 仓库
+2. 新建分支 `feat/your-feature`
+3. 修改代码/文档
+4. 运行自检：
 
-- Python 3.10+，类型注解能写就写
-- 日志统一用 `[插件名]` 前缀
-- 异常要吞得明白：捕获后要么降级、要么写日志，不要静默
+```bash
+python tests/run.py
+```
 
-## 测试
+5. 提交 PR，说明改了什么、为什么
 
-每个插件目录下可以放 `test_*.py`，用 `python test_xxx.py` 直接跑。
-测试用的临时目录不要提交。
+## 插件规范
 
-## 文档
+- 目录名必须是 `astrbot_plugin_<name>`
+- 必须有 `metadata.yaml`、`main.py`、`_conf_schema.json`
+- 配置里的 `memory_dir` 默认留空，由用户填写
+- 不要写死个人路径、API Key、聊天记录
+- 多个命令别名用 `alias=`，不要叠加 `@filter.command`
 
-- 面向新手的步骤放 `docs/03-快速开始.md`
-- 参数解释放 `docs/04-配置手册.md`
-- 设计原因放 `docs/07-设计取舍.md`
+## 数据规范
+
+- 所有存储用 JSON / JSONL
+- 写入用临时文件 + replace
+- 删除一律用 `status: archived`，不物理删除
+
+## 文档规范
+
+- 中文为主，命令和字段保留英文
+- 新增功能要更新 `docs/` 和 `README.md`
+- 截图/示例不要包含真实用户数据
+
+## 提交信息
+
+```
+feat: 增加示例池月度审查
+fix: 修复模式退出后仍注入角色卡
+docs: 补充判断卡字段说明
+```

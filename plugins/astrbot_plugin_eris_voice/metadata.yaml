@@ -1,0 +1,12 @@
+name: astrbot_plugin_eris_voice
+display_name: 艾莉丝语音（按需）
+short_desc: 发 /艾莉丝 <台词>，用艾莉丝声线说这句（中文自动翻日语）
+desc: >-
+  只在主动发命令时使用艾莉丝角色扮演声线：中文台词自动翻成日语，
+  调用交接好的 GPT-SoVITS v3 管线合成并以语音条发送。
+version: 1.0.0
+author: local
+astrbot_version: ">=4.0.0"
+tags:
+  - 语音
+  - 角色扮演

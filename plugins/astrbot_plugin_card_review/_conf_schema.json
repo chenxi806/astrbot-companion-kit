@@ -1,0 +1,32 @@
+{
+  "enabled": {
+    "description": "启用自动整理",
+    "type": "bool",
+    "default": true
+  },
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": ""
+  },
+  "time": {
+    "description": "每天几点整理",
+    "type": "string",
+    "default": "23:00"
+  },
+  "min_messages": {
+    "description": "至少攒够多少条新聊天才整理",
+    "type": "int",
+    "default": 12
+  },
+  "max_messages": {
+    "description": "最多读多少条",
+    "type": "int",
+    "default": 120
+  },
+  "umo": {
+    "description": "整理后发给哪个会话（留空用最近私聊）",
+    "type": "string",
+    "default": ""
+  }
+}

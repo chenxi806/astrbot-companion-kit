@@ -38,19 +38,7 @@ except Exception:  # pragma: no cover
             return self
 
 
-DEFAULT_MEMORY_DIR = ""
-
-
-def _default_memory_dir() -> Path:
-    """默认记忆目录：<AstrBot data>/companion_memory。
-
-    想换位置就在插件配置里填 memory_dir（所有插件填同一个）。
-    """
-    try:
-        base = Path(StarTools.get_data_dir("astrbot_plugin_state"))
-        return base.parent.parent / "companion_memory"
-    except Exception:
-        return Path.home() / "companion_memory"
+DEFAULT_MEMORY_DIR = r"D:\deepseek图标\memory"
 HEADER = "<State>"
 FOOTER = "</State>"
 
@@ -84,8 +72,7 @@ class StatePlugin(Star):
         return default if value is None else value
 
     def _memory_dir(self) -> Path:
-        raw = str(self._cfg("memory_dir", "")).strip()
-        return Path(raw) if raw else _default_memory_dir()
+        return Path(str(self._cfg("memory_dir", "")).strip() or DEFAULT_MEMORY_DIR)
 
     def _state_path(self) -> Path:
         try:

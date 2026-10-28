@@ -1,0 +1,12 @@
+name: astrbot_plugin_voice_switch
+display_name: "语音开关"
+short_desc: 用 /语音 开|关 随时静音或恢复语音消息
+desc: >-
+  随时开关语音：关闭时卸载 mimo TTS 插件，她只打字；
+  开启时重新加载，恢复语音。命令：/语音 关、/语音 开、/语音。
+version: 1.0.0
+author: local
+astrbot_version: ">=4.0.0"
+tags:
+  - 语音
+  - 开关

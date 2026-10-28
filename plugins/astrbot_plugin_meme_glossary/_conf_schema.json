@@ -1,0 +1,27 @@
+{
+  "enabled": {
+    "description": "启用梗库",
+    "type": "bool",
+    "default": true
+  },
+  "memory_dir": {
+    "description": "记忆目录（留空则用 AstrBot 数据目录下的 companion_memory）",
+    "type": "string",
+    "default": ""
+  },
+  "memes_path": {
+    "description": "梗库文件路径（留空则 memory_dir/memes.json）",
+    "type": "string",
+    "default": ""
+  },
+  "max_entries": {
+    "description": "每轮最多注入几条",
+    "type": "int",
+    "default": 2
+  },
+  "scope": {
+    "description": "只对私聊生效",
+    "type": "string",
+    "default": "private"
+  }
+}

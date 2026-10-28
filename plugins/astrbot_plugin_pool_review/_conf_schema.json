@@ -1,0 +1,12 @@
+{
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": ""
+  },
+  "umo": {
+    "description": "通知会话（留空用最近私聊）",
+    "type": "string",
+    "default": ""
+  }
+}

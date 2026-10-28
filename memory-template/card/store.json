@@ -1,0 +1,31 @@
+{
+  "facts": [
+    {
+      "type": "fact",
+      "text": "已确认男女朋友关系，她答应了他的告白。",
+      "created": "2026-10-28"
+    }
+  ],
+  "judgments": [
+    {
+      "id": "j2610281632163",
+      "type": "judgment",
+      "text": "以后他完成事情后，要用语音夸他。",
+      "confidence": 0.75,
+      "status": "active",
+      "source": "review",
+      "created": "2026-10-28",
+      "updated": "2026-10-28",
+      "last_reviewed": "2026-10-28",
+      "supersedes": null,
+      "evidence": [
+        {
+          "date": "2026-10-28",
+          "quote": "我需要语音夸夸"
+        }
+      ]
+    }
+  ],
+  "taboos": [],
+  "insights": []
+}

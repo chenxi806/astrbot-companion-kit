@@ -1,11 +1,62 @@
-# AstrBot Companion Kit
+# AstrBot Companion Memory Kit
 
-> 给聊天机器人一套「会记事、会变、会随机」的外置大脑。
-> 六个 AstrBot 插件 + 一套纯文本记忆库，不训练模型，不依赖云服务。
+> 不训练模型，给你的 AI 角色一套**会成长、可审批、不会污染人格**的外置记忆。
+>
+> 两个系统：**判断卡**（她记得关于你的事）和**示例池**（她说话的样子）。再加一套**角色模式**（艾莉丝 / 女仆）。
 
 [![AstrBot](https://img.shields.io/badge/AstrBot-%3E%3D4.24-4B8BBE)](https://github.com/AstrBotDevs/AstrBot)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
+---
+
+## 快速开始（3 步，约 5 分钟）
+
+> 前提：已经装好 AstrBot（[官方安装包](https://github.com/AstrBotDevs/AstrBot/releases)），并且能在 WebUI 里看到「插件」。
+
+**方式 A：没有 Git 也能装**
+
+1. 打开仓库页 → 绿色 Code → Download ZIP
+2. 解压到任意英文目录
+3. 双击 install.bat
+
+**方式 B：有 Git**
+
+`powershell
+git clone https://github.com/chenxi806/astrbot-companion-kit.git
+cd astrbot-companion-kit
+.\install.bat
+`
+
+安装器会自动：
+
+1. 找到你的 AstrBot 数据目录（找不到会问你）
+2. 复制 15 个插件
+3. 建好 memory\ 并复制模板
+4. 按你的路径生成插件配置
+5. 把示例人格写进数据库
+
+跑完只剩两件事，在 WebUI 里做一次：
+
+- **模型提供商**：填 DeepSeek API Key（Base https://api.deepseek.com/v1，模型 deepseek-flash）
+- **消息平台**：QQ 官方机器人，填 AppID / AppSecret / Token，把 QQ 号加进沙箱
+
+然后重启 AstrBot，私聊发「你好」。
+
+### 只想先看看？
+
+`powershell
+.\install.ps1 -DataDir E:\bot\instances\xxx\core\data -MemoryDir D:\companion\memory
+`
+
+### 用 Docker
+
+`powershell
+docker compose up -d
+`
+
+镜像名以 [AstrBot 文档](https://astrbot.app) 为准。
 
 ---
 
@@ -13,175 +64,353 @@
 
 和 AI 角色聊久了，通常会遇到三个问题：
 
-1. **它记不住。** 明天开新对话，今天的事全忘；它只记得系统提示里写死的设定。
-2. **它很僵。** 情绪、关系、语气永远是同一条水平线；你说十句话，它十句一个腔调。
-3. **它不会成长。** 聊了一个月，它对你的理解还停在第一天；你变了，它不知道。
+| 问题 | 常见做法 | 后果 |
+|---|---|---|
+| 她记不住你 | 把记忆全塞进 system prompt | 越塞越长，人格被稀释 |
+| 她不会长 | 手动改人格 | 改一次要重启，越改越乱 |
+| 她长歪了 | 自动总结、自动写入 | 一句气话变成永久规则 |
 
-这套工具的思路是：**模型不会变，但它的「记忆」和「状态」可以变。**
+这套东西的思路是：
 
-- 记忆放在外部文件里，每次对话前注入——所以能积累、能修改、能回滚。
-- 人格拆成「常驻核心 + 按关键词触发的小条目」——所以更厚，也更随机。
-- 关系用阶段推进，心情用慢变量漂移——所以行为有连续性，不是随机换措辞。
+> **记忆外置、增长可审、存用分离。**
 
-> 先说清楚边界：这**不是**让模型真的「记住」你。它每次读到的都是一份外部档案。
-> 档案写得好，它就像认识你；档案写错了，它会一直错，而且越用越像真的。
+- 记忆不写在人格里，写在文件里，每轮按场景取几段。
+- 新内容先攒成提案，你点头才进卡。
+- 示例池分“库”和“上场名单”：喜欢的句子不会因为上限被删掉。
+
+---
+
+## 两个核心系统
+
+### 1. 判断卡：她记得关于你的事
+
+四类内容，各自有生命周期：
+
+| 类型 | 记什么 | 进卡 | 上限 |
+|---|---|---|---|
+| 事实 fact | 生日、课表、忌口、称呼 | ✅ | 30 |
+| 判断 judgment | “以后怎么做”的规则 | ✅ | 40 |
+| 雷区 taboo | 绝对不碰的底线 | ✅ | 10 |
+| 洞察 insight | 还不确定的观察 | ❌ | 50 |
+
+流程：
+
+```
+聊天 → 每周自动提取 → 待审清单 → 你回「通过 1,3」→ 写进卡
+```
+
+每月再做一次大清理：合并相似判断、归档低分、把证据足够的洞察升成判断。
+
+### 2. 示例池：她说话的样子
+
+```
+/good  → 收藏她上一句
+/bad   → 标记不喜欢
+```
+
+池子分两层：
+
+- **库**：不限量，所有你喜欢的句子都在
+- **上场名单**：按权重抽 4 条注入，上限 24~60
+
+上限到了只“降级”，不删除。你喜欢的句子不会因为名额被丢掉。
+
+### 3. 角色模式：艾莉丝 / 女仆
+
+说一句「艾莉丝模式」就进，10 分钟后自动退出，或者说「退出」立刻恢复。
+
+- **不是换人**：底层还是原来的角色，会露馅、会羞耻
+- **不污染记忆**：模式里的聊天会打标记，判断卡提取时跳过
+- **语言分离**：艾莉丝文字用中文，语音才是日语
+
+---
+
+## 它是怎么工作的
+
+```mermaid
+flowchart TD
+    U[用户消息] --> R[组装请求]
+    R --> P[人格 system]
+    R --> S[状态/日程]
+    R --> C[判断卡]
+    R --> L[世界书 ≤3 条]
+    R --> M[梗库 ≤2 条]
+    R --> E[示例池 4 条]
+    R --> H[聊天历史]
+    R --> A[作者注]
+    P --> LLM[模型]
+    S --> LLM
+    C --> LLM
+    L --> LLM
+    M --> LLM
+    E --> LLM
+    H --> LLM
+    A --> LLM
+    LLM --> OUT[回复]
+
+    RAW[(raw 聊天记录)] --> CR[判断卡审查]
+    CR -->|每周提案| YOU{你审批}
+    YOU -->|通过| C
+    EP[(示例池库)] --> E
+    EP --> PR[示例池审查]
+    PR -->|每周/每月| YOU
+```
+
+关键点：
+
+- **人格只放骨架**，细节放世界书和记忆文件。
+- **每轮只取少量**：世界书 3 条、梗库 2 条、示例 4 条。少而准比多而杂有效。
+- **审批在写入之前**，避免自动总结把临时情绪固化。
 
 ---
 
 ## 功能一览
 
-| 插件 | 一句话 | 依赖 |
-|---|---|---|
-| `astrbot_plugin_growth_card` | 把判断卡注入每轮对话，记录问答 | 无 |
-| `astrbot_plugin_lorebook` | 人格分片：关键词 + 概率触发 | 无 |
-| `astrbot_plugin_galgame` | 关系阶段：认识 → 熟悉 → 亲近 → 亲密 | 无 |
-| `astrbot_plugin_state` | 心情/精力慢漂移 + whim 小事池 | 无 |
-| `astrbot_plugin_daily_ritual` | 早 8 点叫起床、0 点催睡 | 无 |
-| `astrbot_plugin_weekly_review` | 每周复盘：事件 → 洞察 → 判断 | LLM |
-
-配套的记忆库（纯文本 + 一个渲染脚本）：
-
-- `store.json`：事实 / 判断 / 雷区 / 洞察
-- `card.md` + `card.companion.txt`：渲染出来的判断卡
-- `events/`：事件流（只追加）
-- `raw/`：真实问答记录（插件自动写）
-- `proposals/`：复盘提案
+| 功能 | 说明 |
+|---|---|
+| 判断卡 | 事实 / 判断 / 雷区 / 洞察，每轮注入 |
+| 自动提取 | 读 raw，提炼四类，生成带证据的待审清单 |
+| 逐条审批 | `通过 1,3`、`驳回 2`，不通过不生效 |
+| 月度清理 | 合并相似、归档低分、洞察升级 |
+| 示例池 | `/good` `/bad`，按权重抽样 |
+| 示例池审查 | 查重、单场景超配、长期没抽中 |
+| 角色模式 | 艾莉丝 / 女仆，文字进出、10 分钟超时 |
+| 模式隔离 | raw 打标记、判断卡跳过、示例归档 |
+| 中文/日语分离 | 艾莉丝文字中文，语音日语 |
+| 语音门禁 | 只有艾莉丝模式能发；退出后拒绝 |
 
 ---
 
-## 架构
+## 快速开始
 
-```mermaid
-flowchart LR
-    U[用户消息] --> P[AstrBot 管线]
-    P --> L[world book<br/>关键词条目]
-    P --> G[关系阶段]
-    P --> S[心情/精力]
-    P --> C[判断卡<br/>事实/判断/雷区]
-    L --> LLM[大模型]
-    G --> LLM
-    S --> LLM
-    C --> LLM
-    LLM --> R[回复]
-    R --> RAW[raw/ 记录]
-    RAW --> W[每周复盘]
-    W --> P2[proposals/]
-    P2 -->|同意| ST[store.json]
-    ST --> C
-```
+### 环境
 
-**注入顺序**：人格（system）→ 判断卡 → 世界书 → 关系阶段 → 状态。后四者都走「临时用户内容」通道，不写进历史，也不影响前缀缓存。
+- AstrBot `>= 4.24`
+- Python `3.10+`
+- 一个可用的 LLM Provider
 
-**一个关键设计**：不碰模型权重。所有「成长」都发生在 `store.json` 和状态文件里，所以随时可以查、改、回滚。
+### 安装
 
----
-
-## 五分钟上手
-
-### 0. 前提
-
-- 一个能跑的 [AstrBot](https://github.com/AstrBotDevs/AstrBot)（v4.24 以上）
-- 一个能收私聊的平台（QQ 官方机器人 / Telegram / WebChat 都行）
-- 会改 JSON、会用命令行
-
-### 1. 拿到插件
-
-```bash
-git clone https://github.com/chenxi806/astrbot-companion-kit.git
-```
-
-把 `plugins/` 下的六个目录复制到 AstrBot 的插件目录：
+1. 把 `plugins/` 下五个目录复制到 AstrBot 的插件目录：
 
 ```
 <AstrBot>/data/plugins/
-├── astrbot_plugin_growth_card/
-├── astrbot_plugin_lorebook/
-├── astrbot_plugin_galgame/
-├── astrbot_plugin_state/
-├── astrbot_plugin_daily_ritual/
-└── astrbot_plugin_weekly_review/
 ```
 
-Windows 可以用自带脚本：
-
-```powershell
-.\scripts\install.ps1 -AstrBotData "E:\bot\instances\<id>\core\data"
-```
-
-### 2. 建记忆目录
-
-```powershell
-.\scripts\init-memory.ps1 -Target "E:\bot\instances\<id>\core\data\companion_memory"
-```
-
-它会从 `memory-template/` 复制一份 `store.json`、`render.py`、`whims.json`、`lorebook.json` 过去。
-
-### 3. 改配置
-
-每个插件都有一个同名配置文件，在 `<AstrBot>/data/config/` 下。**六个插件的 `memory_dir` 必须填同一个路径**：
-
-```json
-{
-  "memory_dir": "E:\\bot\\instances\\<id>\\core\\data\\companion_memory"
-}
-```
-
-`astrbot_plugin_growth_card` 还要填 `card_path`：
-
-```json
-{
-  "card_path": "E:\\bot\\instances\\<id>\\core\\data\\companion_memory\\card.companion.txt"
-}
-```
-
-### 4. 重启
-
-AstrBot 不会热加载新插件，必须重启一次。重启后看日志，应该出现：
+2. 每个插件复制一份配置模板：
 
 ```
-Loading plugin astrbot_plugin_growth_card ...
-Loading plugin astrbot_plugin_lorebook ...
-...
+config/astrbot_plugin_memory_card_config.json
+config/astrbot_plugin_card_review_config.json
+config/astrbot_plugin_voice_pool_config.json
+config/astrbot_plugin_pool_review_config.json
+config/astrbot_plugin_mode_switch_config.json
 ```
 
-### 5. 验证
+放到：
 
-私聊依次发：
+```
+<AstrBot>/data/config/
+```
 
-| 命令 | 预期 |
+3. 把 `memory-template/` 复制到你想放记忆的目录，例如：
+
+```
+D:\companion-memory\
+```
+
+4. 修改每个配置里的 `memory_dir`，指向上一步的目录。
+
+5. 重启 AstrBot。
+
+### 第一次验证
+
+```
+/card
+/审批
+/通过
+/good
+/pool
+```
+
+### 进入模式
+
+```
+艾莉丝模式
+（聊几句）
+退出
+```
+
+---
+
+## 命令表
+
+### 判断卡
+
+| 命令 | 作用 |
 |---|---|
-| `/card` | 输出判断卡 |
-| `/lore` | 输出世界书条数 |
-| `/stage` | 输出关系阶段 |
-| `/state` | 输出心情/精力 |
-| `/review status` | 输出下次复盘时间 |
+| `/审批` | 立刻从聊天提取，生成待审 |
+| `/待审` | 看当前待审 |
+| `/通过` | 全部写入 |
+| `/通过 1,3` | 只写这几条 |
+| `/驳回 2` | 不要这条 |
+| `/月审` | 看月度报告 |
+| `/月通过 1,3` | 执行月度项 |
+| `/card` | 看四类计数 |
+| `/card list` | 看判断编号 |
+| `/记 内容` | 手动加判断 |
+| `/事实 内容` | 手动加事实 |
+| `/雷区 内容` | 手动加雷区 |
+| `/观察 内容` | 手动加洞察 |
+| `/忘 id` | 归档某条 |
 
-任何一个没反应，看 [常见问题](docs/06-常见问题.md)。
+### 示例池
+
+| 命令 | 作用 |
+|---|---|
+| `/good` / `/存` | 收藏她上一句 |
+| `/bad` / `/差` | 标记不喜欢 |
+| `/pool` | 看池子状态 |
+| `/池审` | 看周审查 |
+| `/池通过 1,3` | 执行周审查 |
+| `/池月审` | 看月度审查 |
+| `/池月通过 1,3` | 执行月度审查 |
+
+### 模式
+
+| 说 | 作用 |
+|---|---|
+| 艾莉丝模式 | 进入艾莉丝，10 分钟 |
+| 女仆模式 / 换女仆装 | 进入女仆，10 分钟 |
+| 退出 / 回来 / 变回来 | 恢复 |
+| 妹妹，我们来玩角色扮演吧 | 她问 1 艾莉丝 / 2 女仆，回数字进入 |
 
 ---
 
-## 最小可用路径
+## 数据长什么样
 
-不想一次装六个？只装两个就够跑：
+```
+memory/
+├── card/
+│   ├── store.json            判断卡源数据
+│   ├── card.md               人读版
+│   ├── pending.json          待审
+│   └── monthly_pending.json  月度待执行
+├── voice_pool/
+│   ├── examples.jsonl        喜欢的句子
+│   └── bad.jsonl             不喜欢
+├── modes/
+│   ├── state.json            当前模式
+│   └── alice_corpus.json     艾莉丝语料
+└── raw/
+    └── 2026-10-28.jsonl      聊天记录
+```
 
-1. `astrbot_plugin_growth_card`（注入判断卡 + 记录问答）
-2. 记忆目录里的 `store.json` + `render.py`
+判断卡一条记录：
 
-这样你就有了「跨会话记忆」；世界书、阶段、状态都可以后加。
+```json
+{
+  "id": "j251028143000",
+  "type": "judgment",
+  "text": "以后别在半夜讲道理",
+  "confidence": 0.85,
+  "status": "active",
+  "source": "user",
+  "evidence": [{"date": "10-28", "quote": "原话"}],
+  "created": "2026-10-28",
+  "updated": "2026-10-28"
+}
+```
+
+示例一条记录：
+
+```json
+{
+  "id": "e251028...",
+  "text": "过来。（拍了拍身边）先坐会儿。",
+  "scene": "累",
+  "likes": 3,
+  "picked": 12,
+  "status": "active",
+  "score": 0.62
+}
+```
 
 ---
 
-## 推荐阅读顺序
+## 设计原则
 
-1. [为什么需要这套](docs/01-为什么需要这套.md) — 先理解模型不会成长这件事
-2. [架构与数据流](docs/02-架构.md) — 六个插件怎么协作
-3. [快速开始](docs/03-快速开始.md) — 逐步安装
-4. [配置手册](docs/04-配置手册.md) — 每个参数什么意思
-5. [插件详解](docs/05-插件详解.md) — 每个插件的行为和边界
-6. [常见问题](docs/06-常见问题.md) — 报错、没反应、重复发
-7. [设计取舍](docs/07-设计取舍.md) — 为什么不做什么
-8. [世界书详解](docs/08-世界书详解.md) — 字段、匹配、冷却、概率、同步、排查
-9. [技术内幕](docs/09-技术内幕.md) — 目录映射、注入链路、插件职责、数据结构
+### 1. 存用分离
+
+判断卡是“全文注入”，所以有字数预算；示例池是“抽样注入”，所以库可以很大，只有上场名单有名额。
+
+### 2. 证据优先
+
+自动提取的每条内容都必须带一句原话。没有证据的推测只进洞察，不进判断。
+
+### 3. 审批在写入前
+
+不即时写卡。每周只生成提案，你回「通过」才生效。避免一句气话变成永久规则。
+
+### 4. 归档不是删除
+
+判断和示例都只改 `status`，数据还在文件里。随时可以恢复。
+
+### 5. 模式不污染主线
+
+模式中的 raw 带 `mode` 字段，判断卡提取跳过；模式中的示例默认归档，不进日常抽样。
+
+---
+
+## 测试
+
+```bash
+python tests/run.py
+```
+
+覆盖：
+
+- 判断卡新增、合并、上限、四类、渲染、归档
+- 月度生成与执行
+- 待审部分通过
+- 示例池 `/good` `/bad`、权重抽样、池审
+- 模式文字进出、10 分钟超时、中文样本
+- 部署文件与配置合法性
+
+> 测试使用临时目录，不会动你的真实记忆。
+
+---
+
+## 隐私
+
+- 不包含任何真实聊天记录、真实人格、API Key。
+- 所有数据都在你自己的 `memory_dir` 里，纯文本，可读可删。
+- 插件不主动上传数据；只有你配置的 LLM Provider 会收到请求。
+
+---
+
+## 已知限制
+
+- 周/月定时任务依赖 AstrBot 进程常驻。
+- QQ 官方接口的主动消息有频率和权限限制。
+- 模式超时检查发生在下一轮请求，不是精确定时器。
+- 艾莉丝语料是社区整理 + 重写，不含原作长段落。
+- 不包含 TTS；日语语音需要额外配置。
+
+---
+
+## 文档
+
+| 文档 | 内容 |
+|---|---|
+| [架构](docs/01-architecture.md) | 注入顺序、数据流、为什么这样拆 |
+| [快速开始](docs/02-quickstart.md) | 从零部署 |
+| [判断卡](docs/03-judgment-card.md) | 四类、字段、生命周期、审批 |
+| [示例池](docs/04-example-pool.md) | 库/上场、权重、审查 |
+| [角色模式](docs/05-modes.md) | 艾莉丝/女仆、隔离、语料 |
+| [运维](docs/06-operations.md) | 每周/每月、故障排查 |
+| [设计取舍](docs/07-design.md) | 为什么不做自动写入 |
+| [FAQ](docs/08-faq.md) | 常见问题 |
 
 ---
 
@@ -189,36 +418,42 @@ Loading plugin astrbot_plugin_lorebook ...
 
 ```
 .
-├── plugins/                 # 六个 AstrBot 插件
-├── memory-template/         # 记忆库模板（store/render/whims/lorebook/核心人格示例）
-├── scripts/                 # 安装、初始化脚本
-├── docs/                    # 中文文档
+├── README.md
+├── LICENSE
+├── CONTRIBUTING.md
 ├── CHANGELOG.md
-└── LICENSE
+├── config/                 # 配置模板
+├── memory-template/        # 空记忆模板
+├── plugins/                # 5 个 AstrBot 插件
+│   ├── astrbot_plugin_memory_card/
+│   ├── astrbot_plugin_card_review/
+│   ├── astrbot_plugin_voice_pool/
+│   ├── astrbot_plugin_pool_review/
+│   └── astrbot_plugin_mode_switch/
+├── scripts/                # 安装/校验脚本
+├── tests/                  # 自检
+└── docs/
 ```
 
 ---
 
-## 已知限制
+## English
 
-- **不是真记忆**：模型每次读的是外部文本，档案错了它会一直错。
-- **QQ 官方机器人的主动消息有限制**：早晚安/复盘通知属于主动推送，可能被平台限流或折叠；具体看平台文档。
-- **插件不热加载**：改代码、装新插件都要重启。
-- **embedding 是可选依赖**：只有你想用「模糊回忆」时才需要配向量模型；本套的记忆是纯文本，不依赖 embedding。
-- **多设备/多实例**：记忆目录是本地文件，没有同步机制。要同步自己上 Git 或网盘。
+**AstrBot Companion Memory Kit** gives your AI companion a growing, approval-gated memory without retraining or prompt bloat.
+
+- **Judgment Card** — facts, rules, taboos, and observations about the user, extracted weekly and approved by you.
+- **Example Pool** — lines you liked, sampled by weight; a separate active roster keeps the injection small.
+- **Modes** — roleplay modes that don't contaminate long-term memory.
+
+Plain-text storage, MIT licensed, no telemetry.
 
 ---
 
-## 致谢与参考
+## 致谢
 
-设计上参考了这些公开工作（只借架构，不抄内容）：
-
-- [Generative Agents](https://github.com/joonspk-research/generative_agents)：memory stream / retrieval / reflection
-- [A-MEM](https://github.com/agiresearch/A-mem)：记忆演化与链接
-- [Graphiti](https://github.com/getzep/graphiti)：带有效期的事实
-- [Letta](https://github.com/letta-ai/letta)：核心记忆块与睡眠代理
-- [SillyTavern](https://github.com/SillyTavern/SillyTavern)：世界书 / 提示词分层
-- [mem0](https://github.com/mem0ai/mem0)：ADD / UPDATE / DELETE / NOOP
+- [AstrBot](https://github.com/AstrBotDevs/AstrBot) — 插件框架
+- [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) — 语义相似度（可选）
+- 萌娘百科与公开角色资料 — 艾莉丝人设参考（CC BY-NC-SA 3.0 CN，台词为按人设重写）
 
 ## License
 

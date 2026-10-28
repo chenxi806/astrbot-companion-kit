@@ -1,0 +1,5 @@
+{
+  "enabled": true,
+  "lore_path": "__MEMORY_DIR__\\lorebook.json",
+  "max_entries": 3
+}

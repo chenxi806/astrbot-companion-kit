@@ -1,0 +1,17 @@
+{
+  "enabled": {
+    "description": "启用判断卡",
+    "type": "bool",
+    "default": true
+  },
+  "memory_dir": {
+    "description": "记忆目录",
+    "type": "string",
+    "default": ""
+  },
+  "scope": {
+    "description": "只对私聊生效",
+    "type": "string",
+    "default": "private"
+  }
+}

@@ -38,20 +38,7 @@ except Exception:  # pragma: no cover
             return self
 
 
-DEFAULT_LORE_PATH = ""
-
-
-def _default_memory_dir() -> Path:
-    """默认记忆目录：<AstrBot data>/companion_memory。
-
-    想换位置就在插件配置里填 memory_dir（所有插件填同一个）。
-    """
-    try:
-        base = Path(StarTools.get_data_dir("astrbot_plugin_lorebook"))
-        return base.parent.parent / "companion_memory"
-    except Exception:
-        return Path.home() / "companion_memory"
-
+DEFAULT_LORE_PATH = r"D:\deepseek图标\memory\lorebook.json"
 HEADER = "<Lorebook>"
 FOOTER = "</Lorebook>"
 
@@ -80,8 +67,8 @@ class LorebookPlugin(Star):
         return default if value is None else value
 
     def _lore_path(self) -> Path:
-        raw = str(self._cfg("lore_path", "")).strip()
-        return Path(raw) if raw else _default_memory_dir() / "lorebook.json"
+        raw = str(self._cfg("lore_path", "")).strip() or DEFAULT_LORE_PATH
+        return Path(raw)
 
     def _state_path(self) -> Path:
         try:
@@ -167,6 +154,23 @@ class LorebookPlugin(Star):
 
     # ---------- 注入 ----------
 
+    def _bump_stats(self, ids: list[str]) -> None:
+        path = self._lore_path().parent / "stats.json"
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except Exception:
+            data = {}
+        bucket = data.setdefault("lorebook", {})
+        for eid in ids:
+            bucket[eid] = int(bucket.get(eid, 0)) + 1
+        data["updated"] = time.strftime("%Y-%m-%dT%H:%M:%S")
+        try:
+            tmp = path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+            tmp.replace(path)
+        except OSError:
+            pass
+
     @filter.on_llm_request()
     async def inject(self, event: AstrMessageEvent, req: ProviderRequest):
         if not bool(self._cfg("enabled", True)):
@@ -199,6 +203,7 @@ class LorebookPlugin(Star):
             for entry in chosen:
                 state[str(entry.get("id"))] = now
             self._save_state(state)
+            self._bump_stats([str(e.get("id")) for e in chosen if e.get("id")])
 
         body = "\n".join(f"- {entry.get('content', '').strip()}" for entry in chosen)
         preamble = "（你此刻想起的设定，自然用，不要复述，也不要提到「设定」「条目」）"

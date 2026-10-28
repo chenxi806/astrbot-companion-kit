@@ -1,5 +1,5 @@
 name: "astrbot_plugin_galgame"
-display_name: "关系阶段 (Galgame)"
+display_name: "关系阶段"
 author: "local"
 version: "v1.0.0"
 desc: "认识→熟悉→亲近→亲密（恋人未满）：自然推进、共同事件、选项互动、告白锁"

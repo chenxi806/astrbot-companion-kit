@@ -1,32 +1,32 @@
 {
-    "enabled": {
-        "description": "启用世界书注入",
-        "type": "bool",
-        "default": true,
-        "hint": "关掉后人格只剩核心部分。"
-    },
-    "lore_path": {
-        "description": "条目文件",
-        "type": "string",
-        "default": "",
-        "hint": "改完保存即生效，插件按文件修改时间自动重读。"
-    },
-    "max_entries": {
-        "description": "每轮最多注入几条",
-        "type": "int",
-        "default": 3,
-        "hint": "推荐 2~4。太多会稀释核心人格。"
-    },
-    "scope": {
-        "description": "生效范围",
-        "type": "string",
-        "default": "private",
-        "hint": "private = 只私聊；all = 群聊也注入（群聊只用 group_only 条目）。"
-    },
-    "allowed_umos": {
-        "description": "只对这些会话生效",
-        "type": "list",
-        "default": [],
-        "hint": "留空表示所有私聊。"
-    }
+  "enabled": {
+    "description": "启用世界书注入",
+    "type": "bool",
+    "default": true,
+    "hint": "关掉后人格只剩核心部分。"
+  },
+  "lore_path": {
+    "description": "条目文件",
+    "type": "string",
+    "default": "D:\\deepseek图标\\memory\\lorebook.json",
+    "hint": "改完保存即生效，插件按文件修改时间自动重读。"
+  },
+  "max_entries": {
+    "description": "每轮最多注入几条",
+    "type": "int",
+    "default": 3,
+    "hint": "推荐 2~4。太多会稀释核心人格。"
+  },
+  "scope": {
+    "description": "生效范围",
+    "type": "string",
+    "default": "private",
+    "hint": "private = 只私聊；all = 群聊也注入（群聊只用 group_only 条目）。"
+  },
+  "allowed_umos": {
+    "description": "只对这些会话生效",
+    "type": "list",
+    "default": [],
+    "hint": "留空表示所有私聊。"
+  }
 }

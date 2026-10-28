@@ -1,0 +1,11 @@
+services:
+  astrbot:
+    # 镜像名以 AstrBot 官方文档为准；需要 Docker Desktop
+    image: soulter/astrbot:latest
+    container_name: astrbot
+    ports:
+      - "6185:6185"
+    volumes:
+      - ./data:/AstrBot/data
+      - ./memory:/memory
+    restart: unless-stopped

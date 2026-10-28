@@ -1,0 +1,7 @@
+{
+  "memory_dir": {
+    "description": "记忆目录（用于判断当前是否在艾莉丝模式）",
+    "type": "string",
+    "default": ""
+  }
+}
